@@ -1,0 +1,68 @@
+<!-- @dsCard group="КП слайды" name="Слайд 3 — Карточка товара" subtitle="Менеджер + фото + характеристики + цена" -->
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8"><title>КП — Карточка товара</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="kp-slides.css">
+<style>
+  .prod { display: grid; grid-template-columns: 360px 1fr; gap: 40px; flex: 1; align-items: start; }
+  .prod__photo { aspect-ratio: 4/5; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);
+    background: radial-gradient(120% 90% at 50% 35%, #fff 0%, #ece3da 60%, #d9cabd 100%); }
+  .prod__name { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--fg-1); line-height: var(--lh-snug); margin: 2px 0 14px; }
+  .prod__rule { height: 2px; width: 64px; background: var(--pech-orange); border-radius: 2px; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<svg style="display:none"><symbol id="flame" viewBox="0 0 32 40"><path d="M16 1c2 8 12 11 12 22 0 8-6 16-12 16S4 33 4 24c0-7 5-10 7-15 1 4 3 6 4 6 0-6-1-9 1-14z"/></symbol></svg>
+
+<div class="stage">
+  <div class="slide">
+    <div class="content">
+      <div class="mgr">
+        <div class="mgr__who">
+          <div class="mgr__ava"></div>
+          <div>
+            <div class="mgr__role">Старший менеджер</div>
+            <div class="mgr__name">Сергей Сергеевич</div>
+            <div class="mgr__soc"><i></i><i></i></div>
+          </div>
+        </div>
+        <div class="mgr__contact">
+          <div><span class="dot"></span><b>samara@pech.ru</b></div>
+          <div><span class="dot"></span><b>+7&nbsp;999&nbsp;999-99-99</b></div>
+        </div>
+      </div>
+
+      <div class="prod">
+        <div class="prod__photo"></div>
+        <div>
+          <div class="prod__rule"></div>
+          <h2 class="prod__name">Отопительная печь ТМФ Профессор<br>Бутаков Студент с&nbsp;чугунной дверцей и&nbsp;стеклом</h2>
+          <div class="spec-h">Характеристики</div>
+          <div class="spec">
+            <div class="r"><span class="k">Высота, мм</span><span class="v">1015</span></div>
+            <div class="r"><span class="k">Мощность, кВт</span><span class="v">9</span></div>
+            <div class="r"><span class="k">Глубина, мм</span><span class="v">645</span></div>
+            <div class="r"><span class="k">Материал</span><span class="v">сталь&nbsp;/ чугун</span></div>
+            <div class="r"><span class="k">Ширина, мм</span><span class="v">540</span></div>
+            <div class="r"><span class="k">Объём, м³</span><span class="v">до&nbsp;250</span></div>
+            <div class="r"><span class="k">Вес, кг</span><span class="v">112</span></div>
+            <div class="r"><span class="k">Дымоход, мм</span><span class="v">115</span></div>
+          </div>
+
+          <div class="price-wrap">
+            <div class="price">309&nbsp;900&nbsp;<small>₽</small><span class="price-badge">−5%</span></div>
+            <div class="price-old">325&nbsp;699&nbsp;₽</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="sb">
+      <div class="sb__logo"><svg class="flame"><use href="#flame"/></svg>Печь.ру</div>
+      <svg class="sb__wm-flame"><use href="#flame"/></svg>
+      <div class="sb__wm-text">печь.ру</div>
+      <a class="sb__more" href="#">Подробнее<br>на&nbsp;Печь.ру</a>
+    </aside>
+  </div>
+</div>
+</body></html>

@@ -24,3 +24,6 @@ data/
 
 # scratch
 _pdf_tmp/
+
+# prototype scratch screenshots
+prototype/preview/shot-*.png
