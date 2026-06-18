@@ -1,0 +1,59 @@
+/* ============================================================
+   КП «Печь.ру» — мобильные (портретные) слайды.
+   Подключается после colors_and_type.css и kp-slides.css.
+   Мастер портрет ~9:16. Базовый кадр 430×764.
+   На мобиле правый сайдбар → верхняя плашка с лого + нижняя со ссылкой.
+   ============================================================ */
+
+.stage-m { padding: 24px; background: #d9d2cb; display: flex; justify-content: center; }
+
+.slide-m {
+  position: relative;
+  width: 430px;
+  min-height: 764px;
+  background:
+    radial-gradient(120% 50% at 0% 0%, #fffaf6 0%, var(--pech-paper) 45%),
+    var(--pech-paper);
+  display: flex; flex-direction: column;
+  font-family: var(--font-body); color: var(--fg-1);
+  box-shadow: var(--shadow-3); overflow: hidden;
+}
+
+/* верхняя оранжевая плашка с лого */
+.mhead { background: var(--pech-orange); color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 6px; }
+.mhead .flame { width: 15px; height: 18px; fill: #fff; }
+.mhead__logo { font-family: var(--font-display); font-weight: 900; font-size: 18px; letter-spacing: -0.02em; }
+
+/* нижняя оранжевая плашка со ссылкой */
+.mfoot { margin-top: auto; background: var(--pech-orange); color: #fff; padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between; }
+.mfoot a { color: #fff; font-size: 12px; text-decoration: none; border-bottom: 1px dashed rgba(255,255,255,.6); padding-bottom: 2px; }
+.mfoot .flame { width: 18px; height: 22px; fill: rgba(255,255,255,.5); }
+
+.mbody { padding: 22px 20px 26px; display: flex; flex-direction: column; flex: 1; }
+.mbody .kp-h1 { font-size: 26px; margin-bottom: 14px; }
+.mbody .kp-lead { max-width: none; font-size: var(--fs-sm); margin-bottom: 20px; }
+
+/* преимущества/блоки — одна колонка */
+.m-col { display: flex; flex-direction: column; gap: 16px; }
+
+/* карточка товара на мобиле */
+.m-photo { aspect-ratio: 4/3; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);
+  background: radial-gradient(120% 90% at 50% 35%, #fff 0%, #ece3da 60%, #d9cabd 100%); margin-bottom: 16px; }
+.m-spec { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+.m-spec .r { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
+.m-spec .k { font-size: var(--fs-xs); color: var(--fg-3); }
+.m-spec .v { font-size: var(--fs-xs); color: var(--fg-1); font-weight: 500; }
+
+/* итоги на мобиле — строки в стопку */
+.m-tot { display: flex; flex-direction: column; }
+.m-row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-subtle); }
+.m-row .thumb { width: 40px; height: 40px; border-radius: var(--radius-md); background: linear-gradient(160deg,#e9dfd6,#c9b6a6); flex: none; }
+.m-row .nm { font-size: var(--fs-sm); color: var(--fg-1); flex: 1; }
+.m-row .qty { font-size: var(--fs-xs); color: var(--fg-3); }
+.m-row .sum { font-size: var(--fs-sm); font-weight: 700; white-space: nowrap; }
+.m-row.svc .nm { color: var(--fg-2); }
+.m-row.discount .nm, .m-row.discount .sum { color: var(--pech-orange); }
+.m-grand { display: flex; align-items: baseline; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 2px solid var(--pech-brown); }
+.m-grand__l { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-md); color: var(--pech-brown); }
+.m-grand__v { font-family: var(--font-display); font-weight: 900; font-size: 28px; color: var(--pech-orange); }

@@ -1,0 +1,105 @@
+/* ============================================================
+   Печь.ру Design System — colors & type foundations
+   Локальная копия для предпросмотра прототипа.
+   Источник правды: claude.ai/design «Печь.ру Design System»
+   (projectId cffe7775-571d-4414-8a6a-6fa40431bdac).
+   Шрифты Museo в локальной копии отсутствуют — подключатся в
+   claude.ai/design; локально идёт системный фолбэк.
+   ============================================================ */
+
+:root {
+  /* ---------- Brand core ---------------------------------- */
+  --pech-orange: #ff6955;
+  --pech-orange-hover: #ff7e6c;
+  --pech-orange-active: #e85644;
+
+  --pech-brown: #5C3D37;
+  --pech-brown-hover: #6f4a43;
+  --pech-brown-light: #7a5a52;
+  --pech-brown-deep: #3f2a25;
+
+  --pech-cream: #f4efea;
+  --pech-paper: #ffffff;
+
+  /* ---------- Neutrals ------------------------------------ */
+  --gray-100: #f7f6f5;
+  --gray-200: #ebe8e6;
+  --gray-300: #E3E0E0;
+  --gray-400: #c9c4c1;
+  --gray-500: #9b938e;
+  --gray-600: #6b6561;
+  --gray-700: #4a4542;
+  --gray-800: #2e2a28;
+  --gray-900: #1a1614;
+
+  /* ---------- Semantic ------------------------------------ */
+  --fg-1: var(--gray-900);
+  --fg-2: var(--gray-700);
+  --fg-3: var(--gray-500);
+  --fg-brown: var(--pech-brown);
+  --fg-orange: var(--pech-orange);
+  --fg-link: var(--pech-orange);
+  --fg-link-hover: var(--pech-orange-active);
+
+  --bg-page: var(--pech-paper);
+  --bg-muted: var(--gray-100);
+  --bg-well: var(--gray-200);
+  --bg-dark: var(--pech-brown);
+  --bg-dark-deep: var(--pech-brown-deep);
+
+  --border-subtle: var(--gray-200);
+  --border-default: var(--gray-300);
+  --border-strong: var(--gray-400);
+
+  --status-ok: #4b8e3f;
+  --status-warn: #e0a434;
+  --status-err: #c0392b;
+
+  /* ---------- Type families ------------------------------- */
+  --font-display: 'Museo Cyrl', 'Museo Sans Cyrl', 'Georgia', serif;
+  --font-body: 'Museo Sans Cyrl', 'Museo Cyrl', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  /* ---------- Type scale (px) ----------------------------- */
+  --fs-xxs: 11px; --fs-xs: 12px; --fs-sm: 13px; --fs-base: 14px;
+  --fs-md: 16px; --fs-lg: 18px; --fs-xl: 22px; --fs-2xl: 26px;
+  --fs-3xl: 32px; --fs-4xl: 40px; --fs-5xl: 54px;
+
+  --lh-tight: 1.15; --lh-snug: 1.3; --lh-body: 1.5; --lh-loose: 1.7;
+
+  /* ---------- Spacing ------------------------------------- */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 10px; --sp-4: 12px; --sp-5: 16px;
+  --sp-6: 20px; --sp-7: 24px; --sp-8: 30px; --sp-9: 40px; --sp-10: 50px;
+  --sp-11: 60px; --sp-12: 80px;
+
+  /* ---------- Radii / borders / shadows ------------------- */
+  --radius-sm: 2px; --radius-md: 3px; --radius-lg: 4px; --radius-pill: 9999px;
+  --bw-hair: 1px; --bw-thick: 2px; --bw-accent: 3px;
+
+  --shadow-1: 0 1px 2px rgba(44,28,22,.06);
+  --shadow-2: 0 2px 6px rgba(44,28,22,.08);
+  --shadow-3: 0 6px 18px rgba(44,28,22,.12);
+  --shadow-4: 0 12px 32px rgba(44,28,22,.18);
+
+  --ease-out: cubic-bezier(.2,.7,.3,1);
+  --dur-fast: 120ms; --dur-base: 200ms; --dur-slow: 320ms;
+}
+
+html, body {
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-body);
+  color: var(--fg-1);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--fg-1);
+  line-height: var(--lh-tight);
+  margin: 0 0 var(--sp-5);
+  font-weight: 500;
+}
+.color-brown { color: var(--fg-brown); }
+.color-orange { color: var(--fg-orange); }
