@@ -1,16 +1,50 @@
 import sqlite3
 import uuid
+import tempfile
+import os
 from pathlib import Path
 from dataclasses import asdict
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader
+from pydantic import BaseModel
+from starlette.background import BackgroundTask
 from kpgen.catalog.index import search
 from kpgen.models import Offer, LineItem, ServiceItem, Proposal, Client, Manager
 from kpgen.store import ProposalStore
 from kpgen.render.html import render_html
 from kpgen.render.pdf import html_to_pdf
+
+
+class ClientIn(BaseModel):
+    name: str
+    date: str = ""
+
+
+class ManagerIn(BaseModel):
+    name: str
+    role: str = "Старший менеджер"
+    email: str = ""
+    phone: str = ""
+
+
+class ItemIn(BaseModel):
+    offer_id: str
+    qty: int = 1
+
+
+class ServiceIn(BaseModel):
+    title: str
+    amount: int
+
+
+class ProposalIn(BaseModel):
+    client: ClientIn
+    manager: ManagerIn
+    items: list[ItemIn] = []
+    services: list[ServiceIn] = []
+    discount: int = 0
 
 _STATIC = Path(__file__).parent.parent / "render" / "static"
 _TEMPLATES = Path(__file__).parent.parent / "render" / "templates"
@@ -43,24 +77,29 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
             con.close()
 
     @app.post("/api/proposals")
-    def create_proposal(payload: dict):
+    def create_proposal(payload: ProposalIn):
         con = _catalog()
         try:
             items = []
-            for it in payload.get("items", []):
-                offer = _offer_by_id(con, it["offer_id"])
+            for it in payload.items:
+                offer = _offer_by_id(con, it.offer_id)
                 if offer is None:
-                    raise HTTPException(404, f"offer {it['offer_id']} not found")
-                items.append(LineItem(offer=offer, qty=int(it.get("qty", 1))))
+                    raise HTTPException(404, f"offer {it.offer_id} not found")
+                items.append(LineItem(offer=offer, qty=it.qty))
         finally:
             con.close()
         p = Proposal(
             id=uuid.uuid4().hex[:10],
-            client=Client(**payload["client"]),
-            manager=Manager(**payload["manager"]),
+            client=Client(name=payload.client.name, date=payload.client.date),
+            manager=Manager(
+                name=payload.manager.name,
+                role=payload.manager.role,
+                email=payload.manager.email,
+                phone=payload.manager.phone,
+            ),
             items=items,
-            services=[ServiceItem(**s) for s in payload.get("services", [])],
-            discount=int(payload.get("discount", 0)),
+            services=[ServiceItem(title=s.title, amount=s.amount) for s in payload.services],
+            discount=payload.discount,
         )
         store.save(p)
         return {"id": p.id}
@@ -71,9 +110,11 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
         if p is None:
             raise HTTPException(404, "proposal not found")
         html = render_html(p, static_base=str(_STATIC.as_uri()))
-        out = Path(proposals_db).parent / f"kp-{pid}.pdf"
-        html_to_pdf(html, str(out), base_url=None)
-        return FileResponse(str(out), media_type="application/pdf", filename=f"kp-{pid}.pdf")
+        fd, tmp = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd)
+        html_to_pdf(html, tmp, base_url=None)
+        return FileResponse(tmp, media_type="application/pdf", filename=f"kp-{pid}.pdf",
+                            background=BackgroundTask(os.unlink, tmp))
 
     @app.get("/kp/{pid}", response_class=HTMLResponse)
     def view_proposal(pid: str):
