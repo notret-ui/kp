@@ -1,5 +1,5 @@
 import sqlite3
-import uuid
+import secrets
 import tempfile
 import os
 from pathlib import Path
@@ -89,7 +89,7 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
         finally:
             con.close()
         p = Proposal(
-            id=uuid.uuid4().hex[:10],
+            id=secrets.token_urlsafe(16),  # ~128 бит: ID — единственный гейт к КП (ссылка-капабилити)
             client=Client(name=payload.client.name, date=payload.client.date),
             manager=Manager(
                 name=payload.manager.name,
