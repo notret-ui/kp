@@ -21,6 +21,12 @@
   box-shadow: var(--shadow-3);
 }
 
+/* В PDF — один слайд = одна страница (на печати разрыв перед каждым, кроме первого) */
+@media print {
+  .slide { box-shadow: none; height: 720px; }
+  .slide + .slide { break-before: page; }
+}
+
 /* ---------- Контентная зона ---------------------------------- */
 .content { padding: 44px 40px 40px 56px; display: flex; flex-direction: column; min-width: 0; }
 
