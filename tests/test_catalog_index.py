@@ -1,6 +1,6 @@
 import sqlite3
 from kpgen.models import Offer
-from kpgen.catalog.index import build_index, search
+from kpgen.catalog.index import build_index, search, related_offers
 
 def _offers():
     return {
@@ -38,3 +38,17 @@ def test_search_quote_in_query_does_not_raise():
     assert isinstance(result1, list)
     result2 = search(con, '"')
     assert isinstance(result2, list)
+
+
+def test_related_offers_same_category_excludes_items():
+    con = sqlite3.connect(":memory:")
+    build_index(con, {
+        "100": Offer("100","Печь А",50000,None,"V","157","u","p","d",{}),
+        "101": Offer("101","Печь Б",70000,None,"V","157","u","p","d",{}),
+        "200": Offer("200","Дымоход",8000,None,"V","200","u","p","d",{}),
+    })
+    res = related_offers(con, ["157"], ["100"], limit=3)
+    ids = [o.offer_id for o in res]
+    assert "101" in ids        # same category, not excluded
+    assert "100" not in ids     # excluded (already in proposal)
+    assert "200" not in ids     # different category

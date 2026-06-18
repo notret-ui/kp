@@ -35,3 +35,15 @@ def test_extra_fields_roundtrip(tmp_path):
     loaded = store.load("xyz")
     assert loaded.items[0].offer.extra_images == ["x.jpg", "y.jpg"]
     assert loaded.items[0].offer.long_description == "длинное"
+
+
+def test_related_roundtrip(tmp_path):
+    o_related = Offer("999", "Сопутствующая печь", 89900, None, "Вендор", "157",
+                      "https://www.pech.ru/r", "pic.jpg", "описание", {})
+    p = _proposal("rel1")
+    p.related = [o_related]
+    store = ProposalStore(str(tmp_path / "kp.sqlite"))
+    store.save(p)
+    loaded = store.load("rel1")
+    assert len(loaded.related) == 1
+    assert loaded.related[0].name == "Сопутствующая печь"

@@ -52,3 +52,14 @@ def test_render_gallery_and_description_slides():
     # description slide
     assert "Очень длинное описание" in html
     assert "Описание товара" in html
+
+
+def test_render_related_slide():
+    from kpgen.render.html import render_html
+    from kpgen.models import Offer
+    p = _proposal()
+    p.related = [Offer("999","Сопутствующая печь Ромотоп",99999,None,"Romotop","157","https://www.pech.ru/x","pic","d",{})]
+    html = render_html(p, static_base="/static")
+    assert "Товары в этой категории" in html
+    assert "Сопутствующая печь Ромотоп" in html
+    assert "99&nbsp;999" in html

@@ -1,0 +1,19 @@
+<div class="slide">
+  <div class="content">
+    <h1 class="kp-h1">Товары в этой категории</h1>
+    <p class="kp-lead">Дополнительные модели, которые подойдут к&nbsp;вашему выбору.</p>
+    <div class="minis">
+      {% for r in p.related %}
+      <div class="mini">
+        <div class="mini__img" style="background-image:url('{{ r.picture }}'); background-size:cover; background-position:center"></div>
+        <div class="mini__b">
+          <div class="mini__t">{{ r.name }}</div>
+          <div class="mini__p">{{ r.price | rub }}&nbsp;₽</div>
+          <a class="mini__btn" href="{{ r.url }}">перейти на&nbsp;страницу</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% include "_sidebar.html.j2" %}
+</div>

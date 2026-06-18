@@ -33,4 +33,5 @@ class ProposalStore:
             items=[LineItem(offer=Offer(**{**{"extra_images": [], "long_description": ""}, **li["offer"]}), qty=li["qty"]) for li in d["items"]],
             services=[ServiceItem(**s) for s in d["services"]],
             discount=d["discount"],
+            related=[Offer(**{**{"extra_images": [], "long_description": ""}, **o}) for o in d.get("related", [])],
         )

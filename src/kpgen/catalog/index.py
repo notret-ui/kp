@@ -43,3 +43,24 @@ def search(con: sqlite3.Connection, query: str, limit: int = 20) -> list[Offer]:
         if not exact or o.offer_id != exact["offer_id"]:
             results.append(o)
     return results[:limit]
+
+def related_offers(con: sqlite3.Connection, category_ids, exclude_ids, limit: int = 3) -> list[Offer]:
+    """Сопутствующие: другие товары тех же категорий, кроме уже добавленных."""
+    con.row_factory = sqlite3.Row
+    cats = [c for c in dict.fromkeys(category_ids) if c]
+    if not cats:
+        return []
+    ph = ",".join("?" * len(cats))
+    rows = con.execute(
+        f"SELECT * FROM offers WHERE category_id IN ({ph}) ORDER BY price DESC", cats
+    ).fetchall()
+    seen = set(exclude_ids)
+    out: list[Offer] = []
+    for r in rows:
+        if r["offer_id"] in seen:
+            continue
+        out.append(_row_to_offer(r))
+        seen.add(r["offer_id"])
+        if len(out) >= limit:
+            break
+    return out
