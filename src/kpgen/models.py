@@ -12,6 +12,8 @@ class Offer:
     picture: str
     description: str
     params: dict[str, str] = field(default_factory=dict)
+    extra_images: list[str] = field(default_factory=list)
+    long_description: str = ""
 
     @property
     def has_discount(self) -> bool:

@@ -15,6 +15,7 @@ from kpgen.models import Offer, LineItem, ServiceItem, Proposal, Client, Manager
 from kpgen.store import ProposalStore
 from kpgen.render.html import render_html
 from kpgen.render.pdf import html_to_pdf
+from kpgen.scraper.site import fetch_and_cache
 
 
 class ClientIn(BaseModel):
@@ -51,7 +52,7 @@ _TEMPLATES = Path(__file__).parent.parent / "render" / "templates"
 
 _jinja_env = Environment(loader=FileSystemLoader(str(_TEMPLATES)), autoescape=True)
 
-def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
+def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = False) -> FastAPI:
     app = FastAPI()
     app.mount("/static", StaticFiles(directory=str(_STATIC)), name="static")
     store = ProposalStore(proposals_db)
@@ -88,6 +89,18 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
                 items.append(LineItem(offer=offer, qty=it.qty))
         finally:
             con.close()
+        if enrich_from_site:
+            cache = sqlite3.connect(proposals_db)
+            try:
+                for li in items:
+                    try:
+                        extra = fetch_and_cache(li.offer.offer_id, li.offer.url, cache)
+                        li.offer.extra_images = list(extra.get("images", []))[:6]
+                        li.offer.long_description = extra.get("description", "")
+                    except Exception:
+                        pass
+            finally:
+                cache.close()
         p = Proposal(
             id=secrets.token_urlsafe(16),  # ~128 бит: ID — единственный гейт к КП (ссылка-капабилити)
             client=Client(name=payload.client.name, date=payload.client.date),

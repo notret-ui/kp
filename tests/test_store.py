@@ -22,3 +22,16 @@ def test_save_and_load_roundtrip(tmp_path):
 def test_load_missing_returns_none(tmp_path):
     store = ProposalStore(str(tmp_path / "kp.sqlite"))
     assert store.load("nope") is None
+
+def test_extra_fields_roundtrip(tmp_path):
+    o = Offer("2", "Камин", 150000, None, "Вендор", "42", "https://www.pech.ru/k",
+              "https://www.pech.ru/k.jpg", "описание", {},
+              extra_images=["x.jpg", "y.jpg"], long_description="длинное")
+    p = Proposal(id="xyz", client=Client("Иван", "1 января 2026 года"),
+                 manager=Manager("Алексей"),
+                 items=[LineItem(o, 1)], services=[], discount=0)
+    store = ProposalStore(str(tmp_path / "kp.sqlite"))
+    store.save(p)
+    loaded = store.load("xyz")
+    assert loaded.items[0].offer.extra_images == ["x.jpg", "y.jpg"]
+    assert loaded.items[0].offer.long_description == "длинное"

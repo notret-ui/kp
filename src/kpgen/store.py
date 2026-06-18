@@ -30,7 +30,7 @@ class ProposalStore:
             id=d["id"],
             client=Client(**d["client"]),
             manager=Manager(**d["manager"]),
-            items=[LineItem(offer=Offer(**li["offer"]), qty=li["qty"]) for li in d["items"]],
+            items=[LineItem(offer=Offer(**{**{"extra_images": [], "long_description": ""}, **li["offer"]}), qty=li["qty"]) for li in d["items"]],
             services=[ServiceItem(**s) for s in d["services"]],
             discount=d["discount"],
         )

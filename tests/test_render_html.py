@@ -23,3 +23,23 @@ def test_render_grand_total_present():
 def test_rub_filter_formatting():
     html = render_html(_proposal(), static_base="/static")
     assert "309&nbsp;900" in html  # price with nbsp thousands separators, not escaped
+
+def test_render_gallery_and_description_slides():
+    o = Offer(
+        "3", "Камин тест", 200000, None, "Вендор", "99",
+        "https://www.pech.ru/kamin",
+        "https://www.pech.ru/kamin.jpg",
+        "краткое описание",
+        {"Вес": "120 кг"},
+        extra_images=["https://www.pech.ru/a.jpg", "https://www.pech.ru/b.jpg"],
+        long_description="Очень длинное описание камина для теста.",
+    )
+    p = Proposal(id="gal", client=Client("Тест", "18 июня 2026 года"),
+                 manager=Manager("Менеджер"),
+                 items=[LineItem(o, 1)], services=[], discount=0)
+    html = render_html(p, static_base="/static")
+    # gallery slide
+    assert "https://www.pech.ru/a.jpg" in html
+    # description slide
+    assert "Очень длинное описание" in html
+    assert "Описание товара" in html
