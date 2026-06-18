@@ -3,9 +3,27 @@
    Локальная копия для предпросмотра прототипа.
    Источник правды: claude.ai/design «Печь.ру Design System»
    (projectId cffe7775-571d-4414-8a6a-6fa40431bdac).
-   Шрифты Museo в локальной копии отсутствуют — подключатся в
-   claude.ai/design; локально идёт системный фолбэк.
+   Шрифты Museo подключены ниже из ./fonts/*.otf (self-hosted).
    ============================================================ */
+
+/* ---------- Web fonts: Museo Cyrl (display) ----------------- */
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-100.otf') format('opentype'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-300.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-500.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-700.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-900.otf') format('opentype'); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-100-Italic.otf') format('opentype'); font-weight: 100; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-300-Italic.otf') format('opentype'); font-weight: 300; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-500-Italic.otf') format('opentype'); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-700-Italic.otf') format('opentype'); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Museo Cyrl'; src: url('fonts/MuseoCyrl-900-Italic.otf') format('opentype'); font-weight: 900; font-style: italic; font-display: swap; }
+
+/* ---------- Web fonts: Museo Sans Cyrl (body/UI) ------------ */
+@font-face { font-family: 'Museo Sans Cyrl'; src: url('fonts/MuseoSansCyrl-100.otf') format('opentype'); font-weight: 100; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Sans Cyrl'; src: url('fonts/MuseoSansCyrl-300.otf') format('opentype'); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Sans Cyrl'; src: url('fonts/MuseoSansCyrl-500.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Sans Cyrl'; src: url('fonts/MuseoSansCyrl-700.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Museo Sans Cyrl'; src: url('fonts/MuseoSansCyrl-900.otf') format('opentype'); font-weight: 900; font-style: normal; font-display: swap; }
 
 :root {
   /* ---------- Brand core ---------------------------------- */
