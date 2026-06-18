@@ -24,6 +24,20 @@ def test_form_page(tmp_path):
     assert r.status_code == 200
     assert "коммерческого предложения" in r.text
 
+def test_proposal_pdf_download(tmp_path):
+    client = TestClient(_app(tmp_path))
+    payload = {
+        "client": {"name": "Дао", "date": "20 августа 2025 года"},
+        "manager": {"name": "Сергей", "email": "s@pech.ru", "phone": "+7 999"},
+        "items": [{"offer_id": "23954", "qty": 1}],
+        "services": [], "discount": 0,
+    }
+    pid = client.post("/api/proposals", json=payload).json()["id"]
+    r = client.get(f"/kp/{pid}.pdf")
+    assert r.status_code == 200
+    assert r.headers["content-type"] == "application/pdf"
+    assert r.content[:4] == b"%PDF"
+
 def test_create_and_get_proposal(tmp_path):
     client = TestClient(_app(tmp_path))
     payload = {

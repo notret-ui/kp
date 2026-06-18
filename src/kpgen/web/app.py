@@ -65,13 +65,6 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
         store.save(p)
         return {"id": p.id}
 
-    @app.get("/kp/{pid}", response_class=HTMLResponse)
-    def view_proposal(pid: str):
-        p = store.load(pid)
-        if p is None:
-            raise HTTPException(404, "proposal not found")
-        return render_html(p, static_base="/static")
-
     @app.get("/kp/{pid}.pdf")
     def proposal_pdf(pid: str):
         p = store.load(pid)
@@ -81,5 +74,12 @@ def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
         out = Path(proposals_db).parent / f"kp-{pid}.pdf"
         html_to_pdf(html, str(out), base_url=None)
         return FileResponse(str(out), media_type="application/pdf", filename=f"kp-{pid}.pdf")
+
+    @app.get("/kp/{pid}", response_class=HTMLResponse)
+    def view_proposal(pid: str):
+        p = store.load(pid)
+        if p is None:
+            raise HTTPException(404, "proposal not found")
+        return render_html(p, static_base="/static")
 
     return app
