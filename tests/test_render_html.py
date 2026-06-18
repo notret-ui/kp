@@ -8,6 +8,12 @@ def _proposal():
                     manager=Manager("Сергей", email="s@pech.ru", phone="+7 999"),
                     items=[LineItem(o1, 1)], services=[ServiceItem("Монтаж", 18000)], discount=5000)
 
+def test_render_has_pdf_download_button():
+    html = render_html(_proposal(), static_base="/static")
+    assert 'class="pdf-fab"' in html
+    assert "/kp/abc.pdf" in html            # ссылка на PDF этого КП
+    assert "@media print" in html            # кнопка скрыта в самом PDF
+
 def test_render_contains_key_fields():
     html = render_html(_proposal(), static_base="/static")
     assert "Печь ТМФ Студент" in html

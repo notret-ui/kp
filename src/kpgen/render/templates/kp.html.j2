@@ -10,9 +10,16 @@
     .prod__photo { aspect-ratio: 4/5; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); background-size: cover; background-position: center; }
     .prod__name { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--fg-1); line-height: var(--lh-snug); margin: 2px 0 14px; }
     .prod__rule { height: 2px; width: 64px; background: var(--pech-orange); border-radius: 2px; margin-bottom: 6px; }
+    .pdf-fab { position: fixed; right: 24px; bottom: 24px; z-index: 1000; background: var(--pech-orange);
+      color: #fff; font-family: var(--font-body); font-size: 14px; text-transform: lowercase; text-decoration: none;
+      padding: 13px 22px; border-radius: var(--radius-lg); box-shadow: var(--shadow-3); }
+    .pdf-fab:hover { background: var(--pech-orange-hover); }
+    @media print { .pdf-fab { display: none !important; } }
   </style>
 </head>
 <body>
+
+<a class="pdf-fab" href="/kp/{{ p.id }}.pdf">скачать PDF</a>
 
 <svg style="display:none"><symbol id="flame" viewBox="0 0 32 40"><path d="M16 1c2 8 12 11 12 22 0 8-6 16-12 16S4 33 4 24c0-7 5-10 7-15 1 4 3 6 4 6 0-6-1-9 1-14z"/></symbol></svg>
 
