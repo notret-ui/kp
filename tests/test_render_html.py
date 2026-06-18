@@ -24,6 +24,15 @@ def test_rub_filter_formatting():
     html = render_html(_proposal(), static_base="/static")
     assert "309&nbsp;900" in html  # price with nbsp thousands separators, not escaped
 
+def test_render_includes_brand_slides():
+    from kpgen.render.html import render_html
+    html = render_html(_proposal(), static_base="/static")
+    assert "2009" in html                      # about
+    assert "Как заказать" in html               # steps
+    assert "Адреса" in html                     # addresses
+    assert "готовых проектов" in html           # projects
+    assert "живой огонь" in html or "Живой огонь" in html  # hero
+
 def test_render_gallery_and_description_slides():
     o = Offer(
         "3", "Камин тест", 200000, None, "Вендор", "99",
