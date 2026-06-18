@@ -5,6 +5,7 @@ from dataclasses import asdict
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from jinja2 import Environment, FileSystemLoader
 from kpgen.catalog.index import search
 from kpgen.models import Offer, LineItem, ServiceItem, Proposal, Client, Manager
 from kpgen.store import ProposalStore
@@ -12,11 +13,19 @@ from kpgen.render.html import render_html
 from kpgen.render.pdf import html_to_pdf
 
 _STATIC = Path(__file__).parent.parent / "render" / "static"
+_TEMPLATES = Path(__file__).parent.parent / "render" / "templates"
+
+_jinja_env = Environment(loader=FileSystemLoader(str(_TEMPLATES)), autoescape=True)
 
 def create_app(catalog_db: str, proposals_db: str) -> FastAPI:
     app = FastAPI()
     app.mount("/static", StaticFiles(directory=str(_STATIC)), name="static")
     store = ProposalStore(proposals_db)
+
+    @app.get("/", response_class=HTMLResponse)
+    def form():
+        tmpl = _jinja_env.get_template("form.html.j2")
+        return tmpl.render(static="/static")
 
     def _catalog() -> sqlite3.Connection:
         return sqlite3.connect(catalog_db)

@@ -18,6 +18,12 @@ def test_search_endpoint(tmp_path):
     assert r.status_code == 200
     assert r.json()[0]["offer_id"] == "23954"
 
+def test_form_page(tmp_path):
+    client = TestClient(_app(tmp_path))
+    r = client.get("/")
+    assert r.status_code == 200
+    assert "коммерческого предложения" in r.text
+
 def test_create_and_get_proposal(tmp_path):
     client = TestClient(_app(tmp_path))
     payload = {

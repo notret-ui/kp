@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Сборка коммерческого предложения — Печь.ру</title>
+  <link rel="stylesheet" href="{{ static }}/colors_and_type.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-muted);
+      min-height: 100vh;
+      padding: var(--sp-9) var(--sp-5);
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-2xl);
+      font-weight: 700;
+      color: var(--pech-brown);
+      margin-bottom: var(--sp-8);
+      padding-bottom: var(--sp-5);
+      border-bottom: var(--bw-accent) solid var(--pech-orange);
+    }
+
+    .section {
+      background: var(--bg-page);
+      border: var(--bw-hair) solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-7);
+      margin-bottom: var(--sp-6);
+      box-shadow: var(--shadow-1);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-md);
+      font-weight: 500;
+      color: var(--pech-brown);
+      margin-bottom: var(--sp-6);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: var(--fs-sm);
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-5);
+      margin-bottom: var(--sp-5);
+    }
+    .field-row.full { grid-template-columns: 1fr; }
+
+    label {
+      display: block;
+    }
+
+    label span {
+      display: block;
+      font-size: var(--fs-sm);
+      color: var(--fg-2);
+      margin-bottom: var(--sp-2);
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+      width: 100%;
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-body);
+      font-size: var(--fs-base);
+      color: var(--fg-1);
+      border: var(--bw-hair) solid var(--border-default);
+      border-radius: var(--radius-md);
+      background: var(--bg-page);
+      transition: border-color var(--dur-fast) var(--ease-out),
+                  box-shadow var(--dur-fast) var(--ease-out);
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--pech-orange);
+      box-shadow: 0 0 0 2px rgba(255,105,85,.15);
+    }
+
+    /* Search row */
+    .search-row {
+      display: flex;
+      gap: var(--sp-3);
+      margin-bottom: var(--sp-5);
+    }
+    .search-row input { flex: 1; }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: var(--sp-3) var(--sp-6);
+      font-family: var(--font-body);
+      font-size: var(--fs-base);
+      font-weight: 500;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-out);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--pech-orange);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--pech-orange-hover); }
+    .btn-primary:active { background: var(--pech-orange-active); }
+
+    .btn-secondary {
+      background: var(--pech-cream);
+      color: var(--pech-brown);
+      border: var(--bw-hair) solid var(--border-default);
+    }
+    .btn-secondary:hover { background: var(--gray-200); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--fg-3);
+      border: var(--bw-hair) solid var(--border-subtle);
+      padding: var(--sp-2) var(--sp-4);
+      font-size: var(--fs-sm);
+    }
+    .btn-ghost:hover { color: var(--status-err); border-color: var(--status-err); }
+
+    /* Search results */
+    .search-results {
+      border: var(--bw-hair) solid var(--border-default);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--sp-5);
+    }
+    .search-results:empty { display: none; }
+
+    .result-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-4);
+      padding: var(--sp-4) var(--sp-5);
+      border-bottom: var(--bw-hair) solid var(--border-subtle);
+      background: var(--bg-page);
+    }
+    .result-item:last-child { border-bottom: none; }
+    .result-item:hover { background: var(--gray-100); }
+
+    .result-name {
+      flex: 1;
+      font-size: var(--fs-sm);
+      color: var(--fg-1);
+      line-height: var(--lh-snug);
+    }
+    .result-price {
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--pech-brown);
+      white-space: nowrap;
+      margin-right: var(--sp-4);
+    }
+
+    /* Selected items */
+    .selected-items {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .selected-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      padding: var(--sp-4) var(--sp-5);
+      border: var(--bw-hair) solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      background: var(--pech-cream);
+    }
+
+    .selected-item-name {
+      flex: 1;
+      font-size: var(--fs-sm);
+      color: var(--fg-1);
+      line-height: var(--lh-snug);
+    }
+    .selected-item-price {
+      font-size: var(--fs-sm);
+      color: var(--fg-2);
+      white-space: nowrap;
+    }
+    .selected-item input[type="number"] {
+      width: 72px;
+      text-align: center;
+      padding: var(--sp-2) var(--sp-3);
+    }
+
+    .empty-hint {
+      font-size: var(--fs-sm);
+      color: var(--fg-3);
+      padding: var(--sp-4) 0;
+    }
+
+    /* Services */
+    .service-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-4);
+      margin-bottom: var(--sp-4);
+    }
+    .service-row input[type="text"] { flex: 1; }
+    .service-row input[type="number"] { width: 140px; }
+
+    /* Discount */
+    .discount-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-5);
+    }
+    .discount-row label span { white-space: nowrap; }
+    .discount-row input { width: 180px; }
+
+    /* Submit area */
+    .submit-area {
+      margin-top: var(--sp-8);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-submit {
+      padding: var(--sp-5) var(--sp-9);
+      font-size: var(--fs-md);
+    }
+
+    /* Notification */
+    .notice {
+      padding: var(--sp-4) var(--sp-5);
+      border-radius: var(--radius-md);
+      font-size: var(--fs-sm);
+      margin-top: var(--sp-5);
+      display: none;
+    }
+    .notice-err {
+      background: #fff0ef;
+      border: var(--bw-hair) solid #f5a9a1;
+      color: var(--status-err);
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <h1 class="page-title">Сборка коммерческого предложения</h1>
+
+  <!-- Клиент -->
+  <div class="section">
+    <div class="section-title">Данные клиента</div>
+    <div class="field-row">
+      <label>
+        <span>Имя клиента</span>
+        <input type="text" id="client-name" placeholder="Иванов Иван Иванович" autocomplete="off">
+      </label>
+      <label>
+        <span>Дата предложения</span>
+        <input type="text" id="client-date" placeholder="20 августа 2025 года" autocomplete="off">
+      </label>
+    </div>
+  </div>
+
+  <!-- Менеджер -->
+  <div class="section">
+    <div class="section-title">Данные менеджера</div>
+    <div class="field-row">
+      <label>
+        <span>Имя менеджера</span>
+        <input type="text" id="mgr-name" placeholder="Сергей Петров" autocomplete="off">
+      </label>
+      <label>
+        <span>E-mail</span>
+        <input type="email" id="mgr-email" placeholder="manager@pech.ru" autocomplete="off">
+      </label>
+    </div>
+    <div class="field-row full">
+      <label>
+        <span>Телефон</span>
+        <input type="text" id="mgr-phone" placeholder="+7 (999) 000-00-00" autocomplete="off">
+      </label>
+    </div>
+  </div>
+
+  <!-- Товары -->
+  <div class="section">
+    <div class="section-title">Товары</div>
+    <div class="search-row">
+      <input type="text" id="search-q" placeholder="Поиск по каталогу…" autocomplete="off">
+      <button class="btn btn-secondary" onclick="doSearch()">найти</button>
+    </div>
+    <div id="search-results" class="search-results"></div>
+    <div id="selected-items" class="selected-items">
+      <p class="empty-hint" id="items-empty-hint">Товары не выбраны. Воспользуйтесь поиском выше.</p>
+    </div>
+  </div>
+
+  <!-- Услуги -->
+  <div class="section">
+    <div class="section-title">Услуги</div>
+    <div id="services-list"></div>
+    <button class="btn btn-secondary" style="margin-top: var(--sp-2);" onclick="addService()">+ услуга</button>
+  </div>
+
+  <!-- Скидка -->
+  <div class="section">
+    <div class="section-title">Скидка</div>
+    <div class="discount-row">
+      <label>
+        <span>Скидка на КП, ₽</span>
+        <input type="number" id="discount" value="0" min="0" step="100">
+      </label>
+    </div>
+  </div>
+
+  <!-- Ошибка -->
+  <div class="notice notice-err" id="err-notice"></div>
+
+  <!-- Кнопка -->
+  <div class="submit-area">
+    <button class="btn btn-primary btn-submit" onclick="submitKp()">собрать кп</button>
+  </div>
+
+</div>
+
+<script>
+  // ─── State ────────────────────────────────────────────────────────────
+  var selectedItems = [];  // {offer_id, name, price, qty}
+
+  // ─── Search ───────────────────────────────────────────────────────────
+  var searchTimeout = null;
+
+  document.getElementById('search-q').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+  });
+
+  function doSearch() {
+    var q = document.getElementById('search-q').value.trim();
+    if (!q) return;
+    fetch('/api/search?q=' + encodeURIComponent(q))
+      .then(function(r) { return r.json(); })
+      .then(function(data) { renderResults(data); })
+      .catch(function() { renderResults([]); });
+  }
+
+  function renderResults(items) {
+    var el = document.getElementById('search-results');
+    if (!items.length) {
+      el.innerHTML = '<div class="result-item"><span class="result-name" style="color:var(--fg-3)">Ничего не найдено</span></div>';
+      return;
+    }
+    el.innerHTML = items.slice(0, 20).map(function(item) {
+      var price = item.price ? formatPrice(item.price) + ' ₽' : '';
+      return '<div class="result-item">'
+        + '<span class="result-name">' + esc(item.name) + '</span>'
+        + '<span class="result-price">' + esc(price) + '</span>'
+        + '<button class="btn btn-secondary" style="font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-4);" '
+        + 'onclick="addItem(' + JSON.stringify(item.offer_id) + ',' + JSON.stringify(item.name) + ',' + (item.price || 0) + ')">добавить</button>'
+        + '</div>';
+    }).join('');
+  }
+
+  function addItem(offer_id, name, price) {
+    // Don't add duplicates
+    for (var i = 0; i < selectedItems.length; i++) {
+      if (selectedItems[i].offer_id === offer_id) return;
+    }
+    selectedItems.push({ offer_id: offer_id, name: name, price: price, qty: 1 });
+    renderSelected();
+  }
+
+  function removeItem(offer_id) {
+    selectedItems = selectedItems.filter(function(it) { return it.offer_id !== offer_id; });
+    renderSelected();
+  }
+
+  function updateQty(offer_id, qty) {
+    for (var i = 0; i < selectedItems.length; i++) {
+      if (selectedItems[i].offer_id === offer_id) {
+        selectedItems[i].qty = parseInt(qty, 10) || 1;
+        break;
+      }
+    }
+  }
+
+  function renderSelected() {
+    var container = document.getElementById('selected-items');
+    var hint = document.getElementById('items-empty-hint');
+    if (!selectedItems.length) {
+      container.innerHTML = '<p class="empty-hint" id="items-empty-hint">Товары не выбраны. Воспользуйтесь поиском выше.</p>';
+      return;
+    }
+    var html = selectedItems.map(function(it) {
+      return '<div class="selected-item">'
+        + '<span class="selected-item-name">' + esc(it.name) + '</span>'
+        + '<span class="selected-item-price">' + formatPrice(it.price) + ' ₽</span>'
+        + '<label style="display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--fg-2);">'
+        + '<span>кол-во</span>'
+        + '<input type="number" min="1" value="' + it.qty + '" style="width:64px;text-align:center;" '
+        + 'oninput="updateQty(' + JSON.stringify(it.offer_id) + ', this.value)">'
+        + '</label>'
+        + '<button class="btn btn-ghost" onclick="removeItem(' + JSON.stringify(it.offer_id) + ')">убрать</button>'
+        + '</div>';
+    }).join('');
+    container.innerHTML = html;
+  }
+
+  // ─── Services ─────────────────────────────────────────────────────────
+  function addService() {
+    var list = document.getElementById('services-list');
+    var row = document.createElement('div');
+    row.className = 'service-row';
+    row.innerHTML = '<input type="text" placeholder="Название услуги" style="flex:1">'
+      + '<input type="number" placeholder="Сумма, ₽" min="0" step="100" style="width:160px">'
+      + '<button class="btn btn-ghost" onclick="this.parentNode.remove()">убрать</button>';
+    list.appendChild(row);
+  }
+
+  function getServices() {
+    var rows = document.querySelectorAll('#services-list .service-row');
+    var result = [];
+    rows.forEach(function(row) {
+      var inputs = row.querySelectorAll('input');
+      var title = inputs[0].value.trim();
+      var amount = parseFloat(inputs[1].value) || 0;
+      if (title) result.push({ title: title, amount: amount });
+    });
+    return result;
+  }
+
+  // ─── Submit ───────────────────────────────────────────────────────────
+  function submitKp() {
+    hideError();
+
+    var clientName = document.getElementById('client-name').value.trim();
+    var clientDate = document.getElementById('client-date').value.trim();
+    var mgrName    = document.getElementById('mgr-name').value.trim();
+    var mgrEmail   = document.getElementById('mgr-email').value.trim();
+    var mgrPhone   = document.getElementById('mgr-phone').value.trim();
+    var discount   = parseInt(document.getElementById('discount').value, 10) || 0;
+
+    if (!clientName) { showError('Укажите имя клиента'); return; }
+    if (!mgrName)    { showError('Укажите имя менеджера'); return; }
+    if (!selectedItems.length) { showError('Добавьте хотя бы один товар'); return; }
+
+    var payload = {
+      client:   { name: clientName, date: clientDate },
+      manager:  { name: mgrName, email: mgrEmail, phone: mgrPhone },
+      items:    selectedItems.map(function(it) { return { offer_id: it.offer_id, qty: it.qty }; }),
+      services: getServices(),
+      discount: discount,
+    };
+
+    var btn = document.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.textContent = 'формируем…';
+
+    fetch('/api/proposals', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    .then(function(r) {
+      if (!r.ok) return r.text().then(function(t) { throw new Error(t); });
+      return r.json();
+    })
+    .then(function(resp) {
+      window.location = '/kp/' + resp.id;
+    })
+    .catch(function(err) {
+      btn.disabled = false;
+      btn.textContent = 'собрать кп';
+      showError('Ошибка при создании КП: ' + err.message);
+    });
+  }
+
+  // ─── Helpers ──────────────────────────────────────────────────────────
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function formatPrice(n) {
+    return Number(n).toLocaleString('ru-RU');
+  }
+
+  function showError(msg) {
+    var el = document.getElementById('err-notice');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function hideError() {
+    document.getElementById('err-notice').style.display = 'none';
+  }
+</script>
+</body>
+</html>
