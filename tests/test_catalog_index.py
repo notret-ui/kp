@@ -27,3 +27,14 @@ def test_search_by_vendor():
     build_index(con, _offers())
     res = search(con, "Феникс")
     assert res[0].offer_id == "1001"
+
+
+# C1 — FTS search must not crash when query contains a double-quote
+def test_search_quote_in_query_does_not_raise():
+    con = sqlite3.connect(":memory:")
+    build_index(con, _offers())
+    # both forms must return a list (possibly empty), never raise
+    result1 = search(con, 'камин"')
+    assert isinstance(result1, list)
+    result2 = search(con, '"')
+    assert isinstance(result2, list)

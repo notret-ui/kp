@@ -7,14 +7,22 @@ def _text(el, tag: str) -> str:
     return child.text.strip() if child is not None and child.text else ""
 
 
+def _full_text(el, tag: str) -> str:
+    child = el.find(tag)
+    if child is None:
+        return ""
+    return "".join(child.itertext()).strip()
+
+
 def _int_or_none(s: str) -> int | None:
-    s = s.strip()
+    s = s.strip().replace("\xa0", "").replace(" ", "").replace(",", ".")
     if not s:
         return None
     try:
-        return int(round(float(s.replace(",", "."))))
+        v = int(round(float(s)))
     except ValueError:
         return None
+    return v if v >= 0 else None   # negative price is invalid
 
 
 def parse_offers(path: str) -> dict[str, Offer]:
@@ -35,10 +43,12 @@ def parse_offers(path: str) -> dict[str, Offer]:
                 category_id=_text(el, "categoryId"),
                 url=_text(el, "url"),
                 picture=_text(el, "picture"),
-                description=_text(el, "description"),
+                description=_full_text(el, "description"),
                 params=params,
             )
         el.clear()
+        while el.getprevious() is not None:
+            del el.getparent()[0]
     return offers
 
 
@@ -55,3 +65,5 @@ def merge_sklade(offers: dict[str, Offer], sklade_path: str) -> None:
             if old is not None:
                 offers[oid].old_price = old
         el.clear()
+        while el.getprevious() is not None:
+            del el.getparent()[0]

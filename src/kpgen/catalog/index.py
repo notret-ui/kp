@@ -34,7 +34,7 @@ def search(con: sqlite3.Connection, query: str, limit: int = 20) -> list[Offer]:
         return []
     exact = con.execute("SELECT * FROM offers WHERE offer_id = ?", (q,)).fetchone()
     results: list[Offer] = [_row_to_offer(exact)] if exact else []
-    fts_q = " ".join(f'"{t}"*' for t in q.split())
+    fts_q = " ".join(f'"{t.replace(chr(34), chr(34)*2)}"*' for t in q.split())
     rows = con.execute("""
         SELECT o.* FROM offers_fts f JOIN offers o ON o.rowid = f.rowid
         WHERE offers_fts MATCH ? ORDER BY rank LIMIT ?""", (fts_q, limit)).fetchall()
