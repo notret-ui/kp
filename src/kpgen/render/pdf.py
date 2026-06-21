@@ -19,7 +19,10 @@ def html_to_pdf(html: str, out_path: str, base_url: str | None = None) -> None:
             browser = pw.chromium.launch()
             page = browser.new_page()
             page.goto("file://" + tmp_html, wait_until="networkidle")
-            page.pdf(path=out_path, landscape=True, print_background=True,
+            # width=1280 / height=720 уже задают ландшафтную страницу 16:9.
+            # landscape=True вместе с явными width/height МЕНЯЕТ их местами
+            # (страница становится портретной 720×1280) — поэтому его не указываем.
+            page.pdf(path=out_path, print_background=True,
                      width="1280px", height="720px",
                      margin={"top": "0", "bottom": "0", "left": "0", "right": "0"})
             browser.close()
