@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<yml_catalog><shop><offers>
+<offer id="23954" type="vendor.model" available="true">
+  <name>Печь камин Guca Iskra</name>
+  <description>Чугунная печь-камин.</description>
+  <vendor>Guca</vendor>
+  <url>https://www.pech.ru/catalog/guca-iskra/</url>
+  <picture>https://www.pech.ru/upload/guca.jpg</picture>
+  <price>45000</price>
+  <oldprice>50000</oldprice>
+  <currencyId>RUR</currencyId>
+  <categoryId>157</categoryId>
+  <delivery>true</delivery>
+</offer>
+</offers></shop></yml_catalog>

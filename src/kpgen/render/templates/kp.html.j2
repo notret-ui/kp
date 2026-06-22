@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Коммерческое предложение — {{ p.client.name }}</title>
+  <link rel="stylesheet" href="{{ static }}/colors_and_type.css">
+  <link rel="stylesheet" href="{{ static }}/kp-slides.css">
+  <style>
+    .prod { display: grid; grid-template-columns: 360px 1fr; gap: 40px; flex: 1; align-items: start; }
+    .prod__photo { aspect-ratio: 4/5; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle); background-size: cover; background-position: center; }
+    .prod__name { font-family: var(--font-display); font-weight: 700; font-size: 24px; color: var(--fg-1); line-height: var(--lh-snug); margin: 2px 0 14px; }
+    .prod__rule { height: 2px; width: 64px; background: var(--pech-orange); border-radius: 2px; margin-bottom: 6px; }
+    .pdf-fab { position: fixed; right: 24px; bottom: 24px; z-index: 1000; background: var(--pech-orange);
+      color: #fff; font-family: var(--font-body); font-size: 14px; text-transform: lowercase; text-decoration: none;
+      padding: 13px 22px; border-radius: var(--radius-lg); box-shadow: var(--shadow-3); }
+    .pdf-fab:hover { background: var(--pech-orange-hover); }
+    @media print { .pdf-fab { display: none !important; } }
+  </style>
+</head>
+<body>
+
+<a class="pdf-fab" href="/kp/{{ p.id }}.pdf">скачать PDF</a>
+
+<svg style="display:none"><symbol id="flame" viewBox="0 0 32 40"><path d="M16 1c2 8 12 11 12 22 0 8-6 16-12 16S4 33 4 24c0-7 5-10 7-15 1 4 3 6 4 6 0-6-1-9 1-14z"/></symbol></svg>
+
+<div class="stage">
+
+  {# ── Слайд 1: Обложка ──────────────────────────────────────── #}
+  <div class="slide">
+    <div class="content">
+      <h1 class="kp-h1">Печь.ру&nbsp;— искусство тепла<br>и&nbsp;уюта в&nbsp;каждом&nbsp;доме!</h1>
+      <p class="kp-lead">Коммерческое предложение для&nbsp;{{ p.client.name }}.<br>Подготовлено {{ p.client.date }}.</p>
+
+      <div class="spec-h">Почему выбирают Печь.ру</div>
+      <div class="adv-grid">
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Индивидуальный подход</p><p class="adv__d">Подбираем решение с&nbsp;учётом вашего интерьера и&nbsp;задач.</p></div></div>
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Высокое качество</p><p class="adv__d">Строгий контроль качества и&nbsp;долгий срок службы.</p></div></div>
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Экологичность</p><p class="adv__d">Модели с&nbsp;минимальными выбросами вредных веществ.</p></div></div>
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Энергоэффективность</p><p class="adv__d">Современные технологии экономят на&nbsp;отоплении.</p></div></div>
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Сервис и&nbsp;поддержка</p><p class="adv__d">Поможем с&nbsp;выбором, установкой и&nbsp;обслуживанием.</p></div></div>
+        <div class="adv"><div class="adv__ic"><svg class="flame"><use href="#flame"/></svg></div>
+          <div><p class="adv__t">Опыт с&nbsp;2009&nbsp;года</p><p class="adv__d">15&nbsp;лет на&nbsp;рынке отопительного оборудования.</p></div></div>
+      </div>
+    </div>
+    {% include "_sidebar.html.j2" %}
+  </div>
+
+  {# ── Слайд 2: О компании ───────────────────────────────────── #}
+  {% include "_about.html.j2" %}
+
+  {# ── Слайды товаров ────────────────────────────────────────── #}
+  {% for li in p.items %}
+  <div class="slide">
+    <div class="content">
+      <div class="mgr">
+        <div class="mgr__who">
+          <div class="mgr__ava"></div>
+          <div>
+            <div class="mgr__role">{{ p.manager.role }}</div>
+            <div class="mgr__name">{{ p.manager.name }}</div>
+            <div class="mgr__soc"><i></i><i></i></div>
+          </div>
+        </div>
+        <div class="mgr__contact">
+          <div><span class="dot"></span><b>{{ p.manager.email }}</b></div>
+          <div><span class="dot"></span><b>{{ p.manager.phone }}</b></div>
+        </div>
+      </div>
+
+      <div class="prod">
+        <div class="prod__photo" style="background-image:url('{{ li.offer.picture }}'); background-size:cover; background-position:center"></div>
+        <div>
+          <div class="prod__rule"></div>
+          <h2 class="prod__name">{{ li.offer.name }}</h2>
+          <div class="spec-h">Характеристики</div>
+          <div class="spec">
+            {% for k, v in li.offer.params.items() %}<div class="r"><span class="k">{{ k }}</span><span class="v">{{ v }}</span></div>{% endfor %}
+          </div>
+
+          <div class="price-wrap">
+            <div class="price">{{ li.offer.price | rub }}&nbsp;<small>₽</small></div>
+            {% if li.offer.has_discount %}<div class="price-old">{{ li.offer.old_price | rub }}&nbsp;₽</div>{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include "_sidebar.html.j2" %}
+  </div>
+
+  {% if li.offer.extra_images %}
+  <div class="slide">
+    <div class="content">
+      <h1 class="kp-h1">Фотогалерея</h1>
+      <div class="photo-grid rows2" style="flex:1">
+        {% for img in li.offer.extra_images %}<div class="ph" style="background-image:url('{{ img }}'); background-size:cover; background-position:center"></div>{% endfor %}
+      </div>
+    </div>
+    {% include "_sidebar.html.j2" %}
+  </div>
+  {% endif %}
+
+  {% if li.offer.long_description %}
+  <div class="slide">
+    <div class="content">
+      <h1 class="kp-h1">Описание товара</h1>
+      <div class="prose">
+        <p>{{ li.offer.long_description }}</p>
+      </div>
+    </div>
+    {% include "_sidebar.html.j2" %}
+  </div>
+  {% endif %}
+
+  {% endfor %}
+
+  {# ── Слайд: Итоги ──────────────────────────────────────────── #}
+  <div class="slide">
+    <div class="content">
+      <h1 class="kp-h1">Итоги предложения</h1>
+
+      <table class="totals">
+        <thead>
+          <tr>
+            <th colspan="2">Наименование</th>
+            <th class="num">Кол-во</th>
+            <th class="num">Цена</th>
+            <th class="num">Сумма</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for li in p.items %}
+          <tr>
+            <td style="width:46px"><div class="thumb" style="background-image:url('{{ li.offer.picture }}'); background-size:cover; background-position:center"></div></td>
+            <td class="nm">{{ li.offer.name }}</td>
+            <td class="num">{{ li.qty }}</td>
+            <td class="num">{{ li.offer.price | rub }}&nbsp;₽</td>
+            <td class="num sum">{{ li.line_sum | rub }}&nbsp;₽</td>
+          </tr>
+          {% endfor %}
+          {% for s in p.services %}
+          <tr class="svc">
+            <td></td>
+            <td class="nm">{{ s.title }}</td>
+            <td class="num">—</td>
+            <td class="num"></td>
+            <td class="num sum">{{ s.amount | rub }}&nbsp;₽</td>
+          </tr>
+          {% endfor %}
+          {% if p.discount %}
+          <tr class="discount">
+            <td></td>
+            <td class="nm">Скидка на&nbsp;предложение</td>
+            <td class="num">—</td>
+            <td class="num"></td>
+            <td class="num sum">−{{ p.discount | rub }}&nbsp;₽</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+
+      <div class="grand">
+        <div class="grand__l">Итого к&nbsp;оплате</div>
+        <div class="grand__v">{{ totals.grand_total | rub }}&nbsp;₽</div>
+      </div>
+    </div>
+    {% include "_sidebar.html.j2" %}
+  </div>
+
+  {# ── Слайд: Живой огонь ────────────────────────────────────── #}
+  {# ── Слайд: Сопутствующие товары ────────────────────────────── #}
+  {% if p.related %}{% include "_related.html.j2" %}{% endif %}
+
+  {% include "_hero.html.j2" %}
+
+  {# ── Слайд: Как заказать монтаж ────────────────────────────── #}
+  {% include "_steps.html.j2" %}
+
+  {# ── Слайд: Адреса шоурумов ────────────────────────────────── #}
+  {% include "_addresses.html.j2" %}
+
+  {# ── Слайд: Готовые проекты ────────────────────────────────── #}
+  {% include "_projects.html.j2" %}
+
+  {# ── Слайд: Контакты ───────────────────────────────────────── #}
+  {% include "_contacts.html.j2" %}
+
+</div>
+</body>
+</html>

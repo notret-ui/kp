@@ -27,3 +27,6 @@ _pdf_tmp/
 
 # prototype scratch screenshots
 prototype/preview/shot-*.png
+
+# git worktrees
+.worktrees/
