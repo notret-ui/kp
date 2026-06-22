@@ -20,6 +20,21 @@ pech.ru и выдать клиенту **веб-ссылку** + **PDF**. Виз
 
 Python · FastAPI · Jinja2 · Playwright (headless Chromium для PDF) · SQLite (FTS5).
 
+## Деплой (Docker)
+
+```bash
+docker compose up -d --build
+```
+
+Открыть: http://SERVER:8000
+
+- На первом старте контейнер сам скачивает фид pech.ru и строит каталог (может занять минуту).
+- Данные (каталог + сохранённые КП) лежат в томе `./data` и переживают перезапуск контейнера.
+- Пересобрать каталог — удалить `data/kpgen.sqlite` и перезапустить, либо:
+  ```bash
+  docker compose exec kpgen python -m kpgen.catalog.refresh
+  ```
+
 ## Настройка окружения
 
 Скопируй `.env.example` → `.env` и заполни. `.env` в гит не коммитится.

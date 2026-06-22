@@ -30,3 +30,7 @@ prototype/preview/shot-*.png
 
 # git worktrees
 .worktrees/
+
+# python build artifacts
+build/
+*.egg-info/

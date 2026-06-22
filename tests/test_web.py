@@ -80,3 +80,22 @@ def test_pdf_not_persisted_in_data_dir(tmp_path):
     assert r.status_code == 200 and r.content[:4] == b"%PDF"
     leftover = list(tmp_path.glob("kp-*.pdf"))
     assert leftover == []
+
+
+def test_dashboard_lists_created_proposals(tmp_path):
+    client = TestClient(_app(tmp_path))
+    payload = {"client": {"name": "Дао", "date": "20 августа 2025 года"},
+               "manager": {"name": "Сергей"}, "items": [{"offer_id": "23954", "qty": 1}],
+               "services": [], "discount": 0}
+    client.post("/api/proposals", json=payload)
+    r = client.get("/dashboard")
+    assert r.status_code == 200
+    assert "Дао" in r.text
+    assert "коммерческие предложения" in r.text.lower()
+
+
+def test_dashboard_empty(tmp_path):
+    client = TestClient(_app(tmp_path))
+    r = client.get("/dashboard")
+    assert r.status_code == 200
+    assert "нет сохранённых" in r.text.lower()

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Мои коммерческие предложения — Печь.ру</title>
+  <link rel="stylesheet" href="{{ static }}/colors_and_type.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg-muted);
+      min-height: 100vh;
+      padding: var(--sp-9) var(--sp-5);
+    }
+
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--sp-5);
+      margin-bottom: var(--sp-8);
+      padding-bottom: var(--sp-5);
+      border-bottom: var(--bw-accent) solid var(--pech-orange);
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: var(--fs-2xl);
+      font-weight: 700;
+      color: var(--pech-brown);
+    }
+
+    .btn-new {
+      display: inline-block;
+      padding: var(--sp-3) var(--sp-6);
+      font-family: var(--font-body);
+      font-size: var(--fs-base);
+      font-weight: 500;
+      background: var(--pech-orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      transition: background var(--dur-fast) var(--ease-out);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn-new:hover { background: var(--pech-orange-hover); }
+    .btn-new:active { background: var(--pech-orange-active); }
+
+    /* Empty state */
+    .empty-state {
+      background: var(--bg-page);
+      border: var(--bw-hair) solid var(--border-default);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-9) var(--sp-7);
+      text-align: center;
+      box-shadow: var(--shadow-1);
+    }
+
+    .empty-state p {
+      font-size: var(--fs-md);
+      color: var(--fg-3);
+      margin-bottom: var(--sp-6);
+    }
+
+    /* Table */
+    .proposals-table {
+      background: var(--bg-page);
+      border: var(--bw-hair) solid var(--border-default);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      font-family: var(--font-display);
+      font-size: var(--fs-sm);
+      font-weight: 500;
+      color: var(--fg-2);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: var(--sp-4) var(--sp-6);
+      text-align: left;
+      border-bottom: var(--bw-hair) solid var(--border-default);
+      background: var(--pech-cream);
+    }
+
+    thead th:last-child { text-align: right; }
+
+    tbody tr {
+      border-bottom: var(--bw-hair) solid var(--border-subtle);
+      transition: background var(--dur-fast) var(--ease-out);
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--gray-100); }
+
+    tbody td {
+      padding: var(--sp-5) var(--sp-6);
+      font-size: var(--fs-base);
+      color: var(--fg-1);
+      vertical-align: middle;
+    }
+
+    .td-client {
+      font-weight: 500;
+      color: var(--pech-brown);
+    }
+
+    .td-date {
+      color: var(--fg-2);
+      font-size: var(--fs-sm);
+    }
+
+    .td-total {
+      text-align: right;
+      font-weight: 500;
+      white-space: nowrap;
+      color: var(--fg-1);
+    }
+
+    .td-actions {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .link-action {
+      display: inline-block;
+      font-size: var(--fs-sm);
+      color: var(--pech-orange);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--dur-fast) var(--ease-out);
+      margin-left: var(--sp-4);
+    }
+    .link-action:first-child { margin-left: 0; }
+    .link-action:hover { border-color: var(--pech-orange); }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1 class="page-title">Мои коммерческие предложения</h1>
+    <a href="/" class="btn-new">+ собрать новое кп</a>
+  </div>
+
+  {% if proposals %}
+    <div class="proposals-table">
+      <table>
+        <thead>
+          <tr>
+            <th>клиент</th>
+            <th>дата</th>
+            <th style="text-align:right">итого</th>
+            <th style="text-align:right">действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for kp in proposals %}
+          <tr>
+            <td class="td-client">{{ kp.client_name }}</td>
+            <td class="td-date">{{ kp.date if kp.date else "—" }}</td>
+            <td class="td-total">{{ kp.total_fmt }}</td>
+            <td class="td-actions">
+              <a href="/kp/{{ kp.id }}" class="link-action">открыть</a>
+              <a href="/kp/{{ kp.id }}.pdf" class="link-action">pdf</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p>Пока нет сохранённых КП.</p>
+      <a href="/" class="btn-new">+ собрать новое кп</a>
+    </div>
+  {% endif %}
+
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.venv/
+.worktrees/
+data/
+*.sqlite
+__pycache__/
+*.pyc
+reference/
+prototype/
+docs/
+.git/
+demo-kp.*

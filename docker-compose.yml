@@ -1,0 +1,11 @@
+services:
+  kpgen:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      PECH_XML_URL: https://www.pech.ru/list-products-1.xml
+      PECH_SKLADE_XML_URL: https://www.pech.ru/pech-na-sklade.xml
+    restart: unless-stopped
