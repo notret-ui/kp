@@ -1,0 +1,36 @@
+# Прод: приложение за reverse-proxy Caddy с авто-TLS (Let's Encrypt).
+# Запуск на сервере:
+#   export KP_DOMAIN=kp.example.ru
+#   docker compose -f docker-compose.prod.yml up -d --build
+# DNS: A-запись KP_DOMAIN -> IP сервера. Порты 80/443 должны быть открыты.
+
+services:
+  kpgen:
+    build: .
+    expose:
+      - "8000"                       # только внутри сети compose, наружу — через caddy
+    volumes:
+      - ./data:/app/data             # каталог + сохранённые КП переживают рестарт
+    environment:
+      PECH_XML_URL: https://www.pech.ru/list-products-1.xml
+      PECH_SKLADE_XML_URL: https://www.pech.ru/pech-na-sklade.xml
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      KP_DOMAIN: ${KP_DOMAIN:?задайте KP_DOMAIN, напр. export KP_DOMAIN=kp.example.ru}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data             # сертификаты Let's Encrypt
+      - caddy_config:/config
+    depends_on:
+      - kpgen
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

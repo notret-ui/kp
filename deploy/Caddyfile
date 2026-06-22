@@ -1,0 +1,5 @@
+# Caddy получает TLS-сертификат для KP_DOMAIN автоматически (Let's Encrypt)
+# и проксирует на приложение внутри сети compose.
+{$KP_DOMAIN} {
+	reverse_proxy kpgen:8000
+}
