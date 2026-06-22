@@ -32,6 +32,7 @@ html, body { margin: 0; padding: 0; }   /* иначе дефолтный отс�
 
 /* ---------- Контентная зона ---------------------------------- */
 .content { padding: 44px 40px 40px 56px; display: flex; flex-direction: column; min-width: 0; }
+.content.content--center { justify-content: center; }
 
 .kp-h1 {
   font-family: var(--font-display);
