@@ -132,6 +132,14 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
         store.save(p)
         return {"id": p.id}
 
+    @app.get("/dashboard", response_class=HTMLResponse)
+    def dashboard():
+        summaries = store.list_summaries()
+        for s in summaries:
+            s["total_fmt"] = f"{s['grand_total']:,}".replace(",", " ") + " ₽"
+        tmpl = _jinja_env.get_template("dashboard.html.j2")
+        return tmpl.render(proposals=summaries, static="/static")
+
     @app.get("/kp/{pid}.pdf")
     def proposal_pdf(pid: str):
         p = store.load(pid)

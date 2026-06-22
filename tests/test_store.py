@@ -1,3 +1,4 @@
+import dataclasses
 import sqlite3
 from kpgen.models import Offer, LineItem, ServiceItem, Proposal, Client, Manager
 from kpgen.store import ProposalStore
@@ -47,3 +48,20 @@ def test_related_roundtrip(tmp_path):
     loaded = store.load("rel1")
     assert len(loaded.related) == 1
     assert loaded.related[0].name == "Сопутствующая печь"
+
+
+def test_list_summaries(tmp_path):
+    store = ProposalStore(str(tmp_path / "t.db"))
+    p1 = _proposal()
+    p1 = dataclasses.replace(p1, id="p1")
+    p2 = _proposal()
+    p2 = dataclasses.replace(p2, id="p2")
+    store.save(p1)
+    store.save(p2)
+    summaries = store.list_summaries()
+    assert len(summaries) == 2
+    # newest first (p2 was inserted last)
+    assert summaries[0]["id"] == "p2"
+    assert summaries[1]["id"] == "p1"
+    assert summaries[0]["client_name"] == p2.client.name
+    assert isinstance(summaries[0]["grand_total"], int)
