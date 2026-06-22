@@ -1,9 +1,11 @@
-FROM mcr.microsoft.com/playwright/python:v1.47.0-jammy
+# python:3.12 — пакет требует Python >=3.11 (образ Playwright -jammy несёт только 3.10).
+# Chromium и его системные зависимости ставит сам Playwright через --with-deps.
+FROM python:3.12-slim-bookworm
 
 WORKDIR /app
 COPY pyproject.toml ./
 COPY src ./src
-RUN pip install --no-cache-dir . && python -m playwright install chromium
+RUN pip install --no-cache-dir . && python -m playwright install --with-deps chromium
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
