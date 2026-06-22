@@ -1,0 +1,31 @@
+# Вариант для сервера, где уже есть reverse-proxy (Caddy/nginx) на портах 80/443.
+# Поднимает ТОЛЬКО приложение и подключает его к внешней сети прокси.
+# Существующий прокси нужно настроить проксировать домен на  kp-kpgen:8000.
+#
+# Запуск:
+#   export PROXY_NETWORK=ilearn_default   # имя docker-сети существующего прокси
+#   docker compose -f docker-compose.behind-proxy.yml up -d --build
+#
+# Затем в Caddyfile прокси добавить блок:
+#   kp.pech.ru { reverse_proxy kp-kpgen:8000 }
+# и перечитать конфиг:  docker exec <caddy> caddy reload --config /etc/caddy/Caddyfile
+
+services:
+  kpgen:
+    build: .
+    container_name: kp-kpgen
+    expose:
+      - "8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      PECH_XML_URL: https://www.pech.ru/list-products-1.xml
+      PECH_SKLADE_XML_URL: https://www.pech.ru/pech-na-sklade.xml
+    networks:
+      - proxy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
+    name: ${PROXY_NETWORK:-ilearn_default}
