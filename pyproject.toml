@@ -20,6 +20,12 @@ pythonpath = ["src"]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kpgen = ["render/templates/*", "render/static/*", "render/static/fonts/*"]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
