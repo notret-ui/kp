@@ -141,10 +141,14 @@
     .search-results {
       border: var(--bw-hair) solid var(--border-default);
       border-radius: var(--radius-md);
-      overflow: hidden;
+      overflow-y: auto;
+      max-height: 360px;
       margin-bottom: var(--sp-5);
     }
     .search-results:empty { display: none; }
+    .results-count { font-size: var(--fs-sm); color: var(--fg-3); margin-bottom: var(--sp-3); }
+    .results-count:empty { display: none; }
+    .selected-count { font-size: var(--fs-sm); font-weight: 500; color: var(--pech-brown); margin-bottom: var(--sp-2); }
 
     .result-item {
       display: flex;
@@ -309,6 +313,7 @@
       <input type="text" id="search-q" placeholder="Поиск по каталогу…" autocomplete="off">
       <button class="btn btn-secondary" onclick="doSearch()">найти</button>
     </div>
+    <div id="results-count" class="results-count"></div>
     <div id="search-results" class="search-results"></div>
     <div id="selected-items" class="selected-items">
       <p class="empty-hint" id="items-empty-hint">Товары не выбраны. Воспользуйтесь поиском выше.</p>
@@ -354,6 +359,26 @@
     if (e.key === 'Enter') doSearch();
   });
 
+  // Делегирование: добавить товар из результатов
+  document.getElementById('search-results').addEventListener('click', function(e) {
+    var b = e.target.closest('.add-btn');
+    if (!b || b.disabled) return;
+    addItem(b.getAttribute('data-id'), b.getAttribute('data-name'), Number(b.getAttribute('data-price')));
+    b.disabled = true;
+    b.textContent = 'добавлен ✓';
+    b.style.opacity = '0.5';
+  });
+
+  // Делегирование: убрать / изменить количество в выбранных
+  document.getElementById('selected-items').addEventListener('click', function(e) {
+    var b = e.target.closest('.remove-btn');
+    if (b) removeItem(b.getAttribute('data-id'));
+  });
+  document.getElementById('selected-items').addEventListener('input', function(e) {
+    var inp = e.target.closest('.qty-input');
+    if (inp) updateQty(inp.getAttribute('data-id'), inp.value);
+  });
+
   function doSearch() {
     var q = document.getElementById('search-q').value.trim();
     if (!q) return;
@@ -366,16 +391,18 @@
   function renderResults(items) {
     var el = document.getElementById('search-results');
     if (!items.length) {
+      document.getElementById('results-count').textContent = '';
       el.innerHTML = '<div class="result-item"><span class="result-name" style="color:var(--fg-3)">Ничего не найдено</span></div>';
       return;
     }
-    el.innerHTML = items.slice(0, 20).map(function(item) {
+    document.getElementById('results-count').textContent = 'Найдено: ' + items.length;
+    el.innerHTML = items.map(function(item) {
+      var added = selectedItems.some(function(s) { return s.offer_id === item.offer_id; });
       var price = item.price ? formatPrice(item.price) + ' ₽' : '';
       return '<div class="result-item">'
         + '<span class="result-name">' + esc(item.name) + '</span>'
         + '<span class="result-price">' + esc(price) + '</span>'
-        + '<button class="btn btn-secondary" style="font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-4);" '
-        + 'onclick="addItem(' + JSON.stringify(item.offer_id) + ',' + JSON.stringify(item.name) + ',' + (item.price || 0) + ')">добавить</button>'
+        + '<button class="btn btn-secondary add-btn" data-id="' + esc(item.offer_id) + '" data-name="' + esc(item.name) + '" data-price="' + (item.price || 0) + '" style="font-size:var(--fs-sm);padding:var(--sp-2) var(--sp-4);"' + (added ? ' disabled' : '') + '>' + (added ? 'добавлен ✓' : 'добавить') + '</button>'
         + '</div>';
     }).join('');
   }
@@ -416,13 +443,12 @@
         + '<span class="selected-item-price">' + formatPrice(it.price) + ' ₽</span>'
         + '<label style="display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--fg-2);">'
         + '<span>кол-во</span>'
-        + '<input type="number" min="1" value="' + it.qty + '" style="width:64px;text-align:center;" '
-        + 'oninput="updateQty(' + JSON.stringify(it.offer_id) + ', this.value)">'
+        + '<input type="number" min="1" value="' + it.qty + '" class="qty-input" data-id="' + esc(it.offer_id) + '" style="width:64px;text-align:center;">'
         + '</label>'
-        + '<button class="btn btn-ghost" onclick="removeItem(' + JSON.stringify(it.offer_id) + ')">убрать</button>'
+        + '<button class="btn btn-ghost remove-btn" data-id="' + esc(it.offer_id) + '">убрать</button>'
         + '</div>';
     }).join('');
-    container.innerHTML = html;
+    container.innerHTML = '<div class="selected-count">Выбрано товаров: ' + selectedItems.length + '</div>' + html;
   }
 
   // ─── Services ─────────────────────────────────────────────────────────
