@@ -52,3 +52,17 @@ def test_related_offers_same_category_excludes_items():
     assert "101" in ids        # same category, not excluded
     assert "100" not in ids     # excluded (already in proposal)
     assert "200" not in ids     # different category
+
+def test_cross_sell_offers_picks_from_groups():
+    from kpgen.catalog.index import cross_sell_offers
+    con = sqlite3.connect(":memory:")
+    build_index(con, {
+        "g1": Offer("g1", "Гриль угольный", 30000, None, "V", "160", "u", "pic", "d", {}),
+        "k1": Offer("k1", "Уличная кухня", 90000, None, "V", "2153", "u", "pic", "d", {}),
+        "f1": Offer("f1", "Садовый диван", 40000, None, "V", "2155", "u", "pic", "d", {}),
+        "x1": Offer("x1", "Печь", 50000, None, "V", "157", "u", "pic", "d", {}),
+    })
+    res = cross_sell_offers(con, exclude_ids=[])
+    cats = [o.category_id for o in res]
+    assert "160" in cats and "2153" in cats and "2155" in cats   # по одному из каждой группы
+    assert "157" not in cats                                      # печь (не смежная) не попадает

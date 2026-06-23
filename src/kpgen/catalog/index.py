@@ -72,3 +72,36 @@ def related_offers(con: sqlite3.Connection, category_ids, exclude_ids,
         if len(out) >= limit:
             break
     return out
+
+
+# Смежные категории для доптоваров (id из фида pech.ru): по одной позиции из группы
+CROSS_SELL_GROUPS = [
+    ("160", "2151", "2152", "161", "2351"),    # грили
+    ("2153", "2331", "2212"),                   # уличные кухни / столы барбекю
+    ("2155", "2295", "2301", "2307", "2328"),   # садовая мебель
+]
+
+def cross_sell_offers(con: sqlite3.Connection, exclude_ids,
+                      groups=CROSS_SELL_GROUPS, per_group: int = 1) -> list[Offer]:
+    """Доптовары из смежных категорий (грили, уличные кухни, мебель) — по per_group из каждой
+    группы, только с фото и ценой, по убыванию цены."""
+    con.row_factory = sqlite3.Row
+    seen = set(exclude_ids)
+    out: list[Offer] = []
+    for group in groups:
+        ph = ",".join("?" * len(group))
+        rows = con.execute(
+            f"SELECT * FROM offers WHERE category_id IN ({ph}) AND price > 0 "
+            f"AND picture != '' ORDER BY price DESC",
+            list(group),
+        ).fetchall()
+        taken = 0
+        for r in rows:
+            if r["offer_id"] in seen:
+                continue
+            out.append(_row_to_offer(r))
+            seen.add(r["offer_id"])
+            taken += 1
+            if taken >= per_group:
+                break
+    return out

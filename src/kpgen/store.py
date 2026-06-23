@@ -53,4 +53,5 @@ class ProposalStore:
             services=[ServiceItem(**s) for s in d["services"]],
             discount=d["discount"],
             related=[Offer(**{**{"extra_images": [], "long_description": ""}, **o}) for o in d.get("related", [])],
+            cross_sell=[Offer(**{**{"extra_images": [], "long_description": ""}, **o}) for o in d.get("cross_sell", [])],
         )

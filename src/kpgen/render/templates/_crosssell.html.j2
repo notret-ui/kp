@@ -1,9 +1,9 @@
 <div class="slide">
   <div class="content">
-    <h1 class="kp-h1">Товары в этой категории</h1>
-    <p class="kp-lead">Дополнительные модели, которые подойдут к&nbsp;вашему выбору.</p>
+    <h1 class="kp-h1">Может пригодиться</h1>
+    <p class="kp-lead">Грили, уличные кухни и&nbsp;садовая мебель&nbsp;— чтобы обустроить пространство вокруг очага.</p>
     <div class="minis">
-      {% for r in p.related %}
+      {% for r in p.cross_sell %}
       <div class="mini">
         <div class="mini__img" style="background-image:url('{{ r.picture }}'); background-size:cover; background-position:center"></div>
         <div class="mini__b">

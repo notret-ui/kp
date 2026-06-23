@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader
 from pydantic import BaseModel
 from starlette.background import BackgroundTask
-from kpgen.catalog.index import search, related_offers
+from kpgen.catalog.index import search, related_offers, cross_sell_offers
 from kpgen.models import Offer, LineItem, ServiceItem, Proposal, Client, Manager
 from kpgen.store import ProposalStore
 from kpgen.render.html import render_html
@@ -120,6 +120,15 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
                 rcon.close()
         except Exception:
             related = []
+        cross = []
+        try:
+            ccon = _catalog()
+            try:
+                cross = cross_sell_offers(ccon, [li.offer.offer_id for li in items])
+            finally:
+                ccon.close()
+        except Exception:
+            cross = []
         p = Proposal(
             id=secrets.token_urlsafe(16),  # ~128 бит: ID — единственный гейт к КП (ссылка-капабилити)
             client=Client(name=payload.client.name, date=payload.client.date),
@@ -133,6 +142,7 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
             services=[ServiceItem(title=s.title, amount=s.amount) for s in payload.services],
             discount=payload.discount,
             related=related,
+            cross_sell=cross,
         )
         store.save(p)
         return {"id": p.id}
