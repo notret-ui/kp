@@ -233,7 +233,15 @@
       gap: var(--sp-5);
     }
     .discount-row label span { white-space: nowrap; }
-    .discount-row input { width: 180px; }
+    .discount-row input { width: 160px; }
+    .discount-row select {
+      width: 200px; padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-body); font-size: var(--fs-base); color: var(--fg-1);
+      border: var(--bw-hair) solid var(--border-default); border-radius: var(--radius-md);
+      background: var(--bg-page); cursor: pointer; outline: none;
+    }
+    .discount-row select:focus { border-color: var(--pech-orange); box-shadow: 0 0 0 2px rgba(255,105,85,.15); }
+    .discount-preview { font-size: var(--fs-sm); color: var(--pech-brown); font-weight: 500; align-self: flex-end; padding-bottom: var(--sp-3); }
 
     /* Submit area */
     .submit-area {
@@ -332,9 +340,17 @@
     <div class="section-title">Скидка</div>
     <div class="discount-row">
       <label>
-        <span>Скидка на КП, ₽</span>
-        <input type="number" id="discount" value="0" min="0" step="100">
+        <span>Размер скидки</span>
+        <input type="number" id="discount" value="0" min="0" step="1">
       </label>
+      <label>
+        <span>В чём скидка</span>
+        <select id="discount-mode">
+          <option value="rub">в рублях (₽)</option>
+          <option value="pct">в процентах (%)</option>
+        </select>
+      </label>
+      <span id="discount-preview" class="discount-preview"></span>
     </div>
   </div>
 
@@ -449,6 +465,7 @@
         + '</div>';
     }).join('');
     container.innerHTML = '<div class="selected-count">Выбрано товаров: ' + selectedItems.length + '</div>' + html;
+    updateDiscountPreview();
   }
 
   // ─── Services ─────────────────────────────────────────────────────────
@@ -474,6 +491,40 @@
     return result;
   }
 
+  // ─── Скидка: ₽ или % ──────────────────────────────────────────────────
+  function computeSubtotal() {
+    var s = 0;
+    selectedItems.forEach(function(it) { s += (it.price || 0) * (it.qty || 1); });
+    getServices().forEach(function(sv) { s += sv.amount || 0; });
+    return s;
+  }
+
+  function computeDiscountRub() {
+    var v = parseFloat(document.getElementById('discount').value) || 0;
+    if (v < 0) v = 0;
+    var mode = document.getElementById('discount-mode').value;
+    if (mode === 'pct') {
+      if (v > 100) v = 100;
+      return Math.round(computeSubtotal() * v / 100);
+    }
+    return Math.round(v);
+  }
+
+  function updateDiscountPreview() {
+    var el = document.getElementById('discount-preview');
+    var mode = document.getElementById('discount-mode').value;
+    var v = parseFloat(document.getElementById('discount').value) || 0;
+    if (mode === 'pct' && v > 0) {
+      el.textContent = '= ' + formatPrice(computeDiscountRub()) + ' ₽ от суммы ' + formatPrice(computeSubtotal()) + ' ₽';
+    } else {
+      el.textContent = '';
+    }
+  }
+
+  document.getElementById('discount').addEventListener('input', updateDiscountPreview);
+  document.getElementById('discount-mode').addEventListener('change', updateDiscountPreview);
+  document.getElementById('services-list').addEventListener('input', updateDiscountPreview);
+
   // ─── Submit ───────────────────────────────────────────────────────────
   function submitKp() {
     hideError();
@@ -483,7 +534,7 @@
     var mgrName    = document.getElementById('mgr-name').value.trim();
     var mgrEmail   = document.getElementById('mgr-email').value.trim();
     var mgrPhone   = document.getElementById('mgr-phone').value.trim();
-    var discount   = parseInt(document.getElementById('discount').value, 10) || 0;
+    var discount   = computeDiscountRub();
 
     if (!clientName) { showError('Укажите имя клиента'); return; }
     if (!mgrName)    { showError('Укажите имя менеджера'); return; }
