@@ -60,7 +60,10 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
     @app.get("/", response_class=HTMLResponse)
     def form():
         tmpl = _jinja_env.get_template("form.html.j2")
-        return tmpl.render(static="/static")
+        # no-store: форма с инлайн-JS не должна кэшироваться браузером,
+        # иначе после обновления у менеджера остаётся старая (сломанная) версия
+        return HTMLResponse(tmpl.render(static="/static"),
+                            headers={"Cache-Control": "no-store, must-revalidate"})
 
     def _catalog() -> sqlite3.Connection:
         return sqlite3.connect(catalog_db)
