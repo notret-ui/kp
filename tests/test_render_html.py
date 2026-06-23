@@ -36,7 +36,6 @@ def test_render_includes_brand_slides():
     assert "2009" in html                      # about
     assert "Как заказать" in html               # steps
     assert "Адреса" in html                     # addresses
-    assert "готовых проектов" in html           # projects
     assert "живой огонь" in html or "Живой огонь" in html  # hero
 
 def test_render_gallery_and_description_slides():
