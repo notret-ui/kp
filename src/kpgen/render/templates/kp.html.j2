@@ -57,6 +57,7 @@
   {% for li in p.items %}
   <div class="slide">
     <div class="content">
+      {% if loop.first %}
       <div class="mgr">
         <div class="mgr__who">
           <div class="mgr__ava"></div>
@@ -66,11 +67,14 @@
             <div class="mgr__soc"><i></i><i></i></div>
           </div>
         </div>
+        {% if p.manager.email or p.manager.phone %}
         <div class="mgr__contact">
-          <div><span class="dot"></span><b>{{ p.manager.email }}</b></div>
-          <div><span class="dot"></span><b>{{ p.manager.phone }}</b></div>
+          {% if p.manager.email %}<div><span class="dot"></span><b>{{ p.manager.email }}</b></div>{% endif %}
+          {% if p.manager.phone %}<div><span class="dot"></span><b>{{ p.manager.phone }}</b></div>{% endif %}
         </div>
+        {% endif %}
       </div>
+      {% endif %}
 
       <div class="prod">
         <div class="prod__photo" style="background-image:url('{{ li.offer.picture }}'); background-size:cover; background-position:center"></div>
@@ -97,7 +101,7 @@
     <div class="content">
       <h1 class="kp-h1">Фотогалерея</h1>
       <div class="photo-grid rows2" style="flex:1">
-        {% for img in li.offer.extra_images %}<div class="ph" style="background-image:url('{{ img }}'); background-size:cover; background-position:center"></div>{% endfor %}
+        {% for img in li.offer.extra_images %}<div class="ph" style="background-image:url('{{ img }}'); background-size:contain; background-repeat:no-repeat; background-position:center; background-color:#fff"></div>{% endfor %}
       </div>
     </div>
     {% include "_sidebar.html.j2" %}
@@ -183,8 +187,7 @@
   {# ── Слайд: Адреса шоурумов ────────────────────────────────── #}
   {% include "_addresses.html.j2" %}
 
-  {# ── Слайд: Готовые проекты ────────────────────────────────── #}
-  {% include "_projects.html.j2" %}
+  {# Слайд «Готовые проекты» убран: без реальных фото показывал пустые плашки #}
 
   {# ── Слайд: Контакты ───────────────────────────────────────── #}
   {% include "_contacts.html.j2" %}

@@ -538,6 +538,7 @@
 
     if (!clientName) { showError('Укажите имя клиента'); return; }
     if (!mgrName)    { showError('Укажите имя менеджера'); return; }
+    if (!mgrPhone)   { showError('Укажите телефон менеджера — он попадёт в контакты КП'); return; }
     if (!selectedItems.length) { showError('Добавьте хотя бы один товар'); return; }
 
     var payload = {

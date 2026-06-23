@@ -44,15 +44,23 @@ def search(con: sqlite3.Connection, query: str, limit: int = 20) -> list[Offer]:
             results.append(o)
     return results[:limit]
 
-def related_offers(con: sqlite3.Connection, category_ids, exclude_ids, limit: int = 3) -> list[Offer]:
-    """Сопутствующие: другие товары тех же категорий, кроме уже добавленных."""
+def related_offers(con: sqlite3.Connection, category_ids, exclude_ids,
+                   max_price: int | None = None, limit: int = 3) -> list[Offer]:
+    """Сопутствующие: товары тех же категорий, кроме уже добавленных.
+    Если задан max_price — только ДЕШЕВЛЕ него (доп. позиции в бюджете клиента),
+    чтобы не подсовывать самые дорогие комплекты. Сортировка по убыванию цены."""
     con.row_factory = sqlite3.Row
     cats = [c for c in dict.fromkeys(category_ids) if c]
     if not cats:
         return []
     ph = ",".join("?" * len(cats))
+    params = list(cats)
+    where = f"category_id IN ({ph}) AND price > 0"
+    if max_price:
+        where += " AND price < ?"
+        params.append(int(max_price))
     rows = con.execute(
-        f"SELECT * FROM offers WHERE category_id IN ({ph}) ORDER BY price DESC", cats
+        f"SELECT * FROM offers WHERE {where} ORDER BY price DESC", params
     ).fetchall()
     seen = set(exclude_ids)
     out: list[Offer] = []

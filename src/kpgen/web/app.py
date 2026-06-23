@@ -108,10 +108,12 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
         try:
             rcon = _catalog()
             try:
+                prices = [li.offer.price for li in items if li.offer.price]
                 related = related_offers(
                     rcon,
                     [li.offer.category_id for li in items],
                     [li.offer.offer_id for li in items],
+                    max_price=min(prices) if prices else None,
                     limit=3,
                 )
             finally:
