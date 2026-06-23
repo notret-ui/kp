@@ -181,7 +181,8 @@ html, body { margin: 0; padding: 0; }   /* иначе дефолтный отс�
 
 /* ---------- Эмоциональный слайд (hero) ----------------------- */
 .hero { position: relative; flex: 1; border-radius: var(--radius-lg); overflow: hidden; display: flex; align-items: flex-end;
-  background: radial-gradient(80% 120% at 70% 30%, #ffb27a 0%, #b9501f 40%, #1c0f08 100%); }
+  background-image: linear-gradient(to top right, rgba(20,12,8,.82), rgba(20,12,8,.20) 55%, rgba(20,12,8,0) 85%), url('img/hero.jpg');
+  background-size: cover; background-position: center; }
 .hero__cap { padding: 40px; color: #fff; }
 .hero__cap h1 { color: #fff; font-size: 34px; margin: 0 0 10px; }
 .hero__cap p { color: rgba(255,255,255,.85); font-size: var(--fs-md); max-width: 520px; margin: 0; }

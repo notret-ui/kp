@@ -24,7 +24,7 @@ asyncio_mode = "auto"
 where = ["src"]
 
 [tool.setuptools.package-data]
-kpgen = ["render/templates/*", "render/static/*", "render/static/fonts/*"]
+kpgen = ["render/templates/*", "render/static/*", "render/static/fonts/*", "render/static/img/*"]
 
 [build-system]
 requires = ["setuptools>=68"]
