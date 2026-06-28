@@ -55,3 +55,4 @@ class Proposal:
     discount: int = 0  # скидка на КП в целом, рубли (положительное число)
     related: list[Offer] = field(default_factory=list)
     cross_sell: list[Offer] = field(default_factory=list)  # доптовары смежных категорий
+    number: str = ""  # человеческий номер вида КП-ГГГГММДД-NNN

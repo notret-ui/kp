@@ -9,6 +9,19 @@ def _proposal(pid="abc"):
                     manager=Manager("Сергей", email="s@pech.ru", phone="+7 999"),
                     items=[LineItem(o1, 2)], services=[ServiceItem("Монтаж", 18000)], discount=5000)
 
+def test_next_number_increments_per_day(tmp_path):
+    store = ProposalStore(str(tmp_path / "kp.sqlite"))
+    n1 = store.next_number(today="20260628")
+    assert n1 == "КП-20260628-001"
+    p = _proposal("a1"); p.number = n1; store.save(p)
+    assert store.next_number(today="20260628") == "КП-20260628-002"
+    assert store.next_number(today="20260629") == "КП-20260629-001"  # новый день — с 001
+
+def test_number_roundtrip(tmp_path):
+    store = ProposalStore(str(tmp_path / "kp.sqlite"))
+    p = _proposal("n1"); p.number = "КП-20260628-007"; store.save(p)
+    assert store.load("n1").number == "КП-20260628-007"
+
 def test_save_and_load_roundtrip(tmp_path):
     store = ProposalStore(str(tmp_path / "kp.sqlite"))
     store.save(_proposal("abc"))

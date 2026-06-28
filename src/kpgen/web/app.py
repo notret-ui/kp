@@ -143,6 +143,7 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
             discount=payload.discount,
             related=related,
             cross_sell=cross,
+            number=store.next_number(),
         )
         store.save(p)
         return {"id": p.id}
@@ -164,7 +165,8 @@ def create_app(catalog_db: str, proposals_db: str, enrich_from_site: bool = Fals
         fd, tmp = tempfile.mkstemp(suffix=".pdf")
         os.close(fd)
         html_to_pdf(html, tmp, base_url=None)
-        return FileResponse(tmp, media_type="application/pdf", filename=f"kp-{pid}.pdf",
+        fname = f"{p.number}.pdf" if p.number else f"kp-{pid}.pdf"
+        return FileResponse(tmp, media_type="application/pdf", filename=fname,
                             background=BackgroundTask(os.unlink, tmp))
 
     @app.get("/kp/{pid}", response_class=HTMLResponse)

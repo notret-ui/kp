@@ -162,6 +162,7 @@
       <table>
         <thead>
           <tr>
+            <th>№</th>
             <th>клиент</th>
             <th>дата</th>
             <th style="text-align:right">итого</th>
@@ -171,6 +172,7 @@
         <tbody>
           {% for kp in proposals %}
           <tr>
+            <td class="td-date">{{ kp.number if kp.number else "—" }}</td>
             <td class="td-client">{{ kp.client_name }}</td>
             <td class="td-date">{{ kp.date if kp.date else "—" }}</td>
             <td class="td-total">{{ kp.total_fmt }}</td>
