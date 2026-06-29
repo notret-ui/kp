@@ -318,9 +318,10 @@
   <div class="section">
     <div class="section-title">Товары</div>
     <div class="search-row">
-      <input type="text" id="search-q" placeholder="Поиск по каталогу…" autocomplete="off">
+      <input type="text" id="search-q" placeholder="Название или код товара (артикул), напр. 23954…" autocomplete="off">
       <button class="btn btn-secondary" onclick="doSearch()">найти</button>
     </div>
+    <p class="empty-hint" style="margin-top:calc(-1*var(--sp-3));margin-bottom:var(--sp-4);">Можно искать по названию или по коду товара (артикул) с сайта pech.ru.</p>
     <div id="results-count" class="results-count"></div>
     <div id="search-results" class="search-results"></div>
     <div id="selected-items" class="selected-items">
